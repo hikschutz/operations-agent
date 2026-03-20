@@ -15,7 +15,8 @@
         .container { max-width: 660px; margin: 0 auto; padding: 40px 24px 60px; }
 
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: var(--black); text-decoration: none; }
+        .logo:hover { color: var(--gold); }
         .progress-label { font-size: 11px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
 
         .progress-bar { height: 2px; background: var(--light); border-radius: 2px; margin-bottom: 60px; }
@@ -99,7 +100,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">HS.</div>
+        <a href="/" class="logo">HS.</a>
         <span class="progress-label" id="progLabel">Pergunta 1 de {{ questions|length }}</span>
     </div>
     <div class="progress-bar">

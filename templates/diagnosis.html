@@ -15,9 +15,17 @@
 
         .container { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
 
-        .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--black); text-decoration: none; }
+        .logo:hover { color: var(--gold); }
+        .header-right { display: flex; align-items: center; gap: 20px; }
         .date-label { font-size: 12px; color: var(--gray); }
+        .back-link {
+            font-size: 12px; color: var(--gray); text-decoration: none;
+            display: flex; align-items: center; gap: 5px; transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--black); }
+        .back-link svg { flex-shrink: 0; }
 
         .gold-line { height: 2px; background: var(--gold); margin-bottom: 48px; }
 
@@ -107,8 +115,14 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">HS.</div>
-        <span class="date-label" id="dateLabel"></span>
+        <a href="/" class="logo">HS.</a>
+        <div class="header-right">
+            <a href="/" class="back-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                Voltar ao site
+            </a>
+            <span class="date-label" id="dateLabel"></span>
+        </div>
     </div>
     <div class="gold-line"></div>
 
