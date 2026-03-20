@@ -12,6 +12,11 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'hs-diagnostico-secret-local')
 
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({'error': str(e)}), 500
+
 QUESTIONS_SHORT = [
     "Me conta o que você faz e como o seu negócio funciona no dia a dia.",
     "Quais são as tarefas que mais consomem tempo — seu e da sua equipe?",
@@ -67,7 +72,7 @@ def interview():
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     transcriptions = data.get('transcriptions', [])
     questions = data.get('questions', [])
 
