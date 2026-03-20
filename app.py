@@ -88,11 +88,11 @@ def generate():
     for i, (q, a) in enumerate(zip(questions, transcriptions), 1):
         qa_text += f"\nPergunta {i}: {q}\nResposta do empresário: {a}\n"
 
-    prompt = f"""Você é um consultor especialista em implementação de Inteligência Artificial em pequenas e médias empresas brasileiras. Você tem 15 anos de experiência e trabalha com empresas de diversos setores.
+    prompt = """Você é um consultor especialista em implementação de Inteligência Artificial em pequenas e médias empresas brasileiras. Você tem 15 anos de experiência e trabalha com empresas de diversos setores.
 
 Você acabou de conduzir uma entrevista diagnóstica com um dono de negócio. Aqui estão as perguntas e respostas da entrevista:
 
-{qa_text}
+__QA_TEXT__
 
 Com base nessas respostas, crie um documento de diagnóstico completo, personalizado e de alta qualidade. Siga exatamente esta estrutura:
 
@@ -117,12 +117,12 @@ Descreva como este negócio poderia operar em 2 a 3 anos com agentes de IA integ
 Crie um diagrama visual do fluxo operacional deste negócio. Use EXATAMENTE este formato JSON dentro de um bloco de código com a linguagem "diagram-visual". Entre 4 e 7 steps. Escolha emojis relevantes ao setor e ao processo específico:
 
 ```diagram-visual
-{{
+{
   "steps": [
-    {{"icon": "📥", "label": "Nome do processo", "detail": "detalhe curto e específico"}},
-    {{"icon": "⚙️", "label": "Nome do processo", "detail": "detalhe curto e específico"}}
+    {"icon": "📥", "label": "Nome do processo", "detail": "detalhe curto e específico"},
+    {"icon": "⚙️", "label": "Nome do processo", "detail": "detalhe curto e específico"}
   ]
-}}
+}
 ```
 
 ## Próximos Passos
@@ -142,7 +142,7 @@ Regras de estilo obrigatórias:
 - Voz ativa, frases diretas e objetivas
 - Cada afirmação deve ser específica a este negócio — nunca genérica ou aplicável a qualquer empresa
 - Não use jargões técnicos desnecessários
-- Trate o leitor como um adulto inteligente que quer soluções práticas, não teoria"""
+- Trate o leitor como um adulto inteligente que quer soluções práticas, não teoria""".replace("__QA_TEXT__", qa_text)
 
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
