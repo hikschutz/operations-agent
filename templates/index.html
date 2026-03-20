@@ -147,6 +147,33 @@
             margin-top: 3px;
         }
 
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--light);
+        }
+        .top-nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--black);
+            text-decoration: none;
+        }
+        .top-nav-logo:hover { color: var(--gold); }
+        .top-nav-back {
+            font-size: 12px;
+            color: var(--gray);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+        .top-nav-back:hover { color: var(--black); }
+
         footer {
             text-align: center;
             padding: 28px;
@@ -159,8 +186,14 @@
     </style>
 </head>
 <body>
+    <nav class="top-nav">
+        <a href="/" class="top-nav-logo">HS.</a>
+        <a href="/" class="top-nav-back">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Voltar ao site
+        </a>
+    </nav>
     <main class="main">
-        <a href="/" class="logo">HS.</a>
 
         <h1>Descubra como implementar IA no seu negócio</h1>
         <div class="divider"></div>
