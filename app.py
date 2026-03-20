@@ -108,11 +108,20 @@ Descreva como este negócio poderia operar em 2 a 3 anos com agentes de IA integ
 
 ## Diagrama de Fluxo Operacional
 
-Crie um diagrama Mermaid (flowchart LR) que visualize o fluxo operacional principal deste negócio com os processos identificados e onde a IA pode se integrar. Use nomes curtos e específicos a este negócio (máximo 4 palavras por nó). O diagrama deve ter entre 6 e 10 nós. Coloque o código em um bloco de código com a linguagem mermaid.
+Crie um diagrama visual do fluxo operacional deste negócio. Use EXATAMENTE este formato JSON dentro de um bloco de código com a linguagem "diagram-visual". Entre 4 e 7 steps. Escolha emojis relevantes ao setor e ao processo específico:
+
+```diagram-visual
+{
+  "steps": [
+    {"icon": "📥", "label": "Nome do processo", "detail": "detalhe curto e específico"},
+    {"icon": "⚙️", "label": "Nome do processo", "detail": "detalhe curto e específico"}
+  ]
+}
+```
 
 ## Próximos Passos
 
-Apresente 3 ações concretas, sequenciadas e com prazo estimado, que o empresário pode tomar imediatamente para começar a jornada de implementação de IA.
+Escreva 3 parágrafos — um para cada ação concreta e sequenciada com prazo estimado. Cada parágrafo começa com o nome da ação em negrito. Sem listas numeradas, sem bullet points — apenas parágrafos corridos.
 
 ## A Janela de Oportunidade
 
@@ -198,7 +207,7 @@ def download_pdf():
         if stripped.startswith('```'):
             if not in_code_block:
                 in_code_block = True
-                if 'mermaid' in stripped:
+                if 'mermaid' in stripped or 'diagram-visual' in stripped:
                     story.append(Paragraph('[Diagrama disponível na versão web do diagnóstico]', note_style))
             else:
                 in_code_block = False
