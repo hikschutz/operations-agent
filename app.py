@@ -72,16 +72,17 @@ def interview():
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.get_json(silent=True) or {}
-    transcriptions = data.get('transcriptions', [])
-    questions = data.get('questions', [])
+    try:
+        data = request.get_json(silent=True) or {}
+        transcriptions = data.get('transcriptions', [])
+        questions = data.get('questions', [])
 
-    if not transcriptions or not questions:
-        return jsonify({'error': 'Dados incompletos.'}), 400
+        if not transcriptions or not questions:
+            return jsonify({'error': 'Dados incompletos.'}), 400
 
-    api_key = os.environ.get('GEMINI_API_KEY')
-    if not api_key:
-        return jsonify({'error': 'Chave da API não configurada. Verifique o arquivo .env'}), 500
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if not api_key:
+            return jsonify({'error': 'Chave da API não configurada.'}), 500
 
     qa_text = ""
     for i, (q, a) in enumerate(zip(questions, transcriptions), 1):
@@ -143,20 +144,20 @@ Regras de estilo obrigatórias:
 - Não use jargões técnicos desnecessários
 - Trate o leitor como um adulto inteligente que quer soluções práticas, não teoria"""
 
-    try:
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt
         )
         diagnosis = response.text
+
+        token = str(uuid.uuid4())
+        diagnoses_store[token] = diagnosis
+
+        return jsonify({'success': True, 'token': token})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-    token = str(uuid.uuid4())
-    diagnoses_store[token] = diagnosis
-
-    return jsonify({'success': True, 'token': token})
 
 
 @app.route('/diagnosis')
