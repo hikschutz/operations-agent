@@ -403,10 +403,17 @@
     .ai-pillar:last-child { border-bottom: none; }
 
     .ai-pillar-icon {
-      font-size: 1.1rem;
-      margin-top: 0.1rem;
+      width: 32px;
+      height: 32px;
       flex-shrink: 0;
+      margin-top: 0.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 6px;
     }
+    .ai-pillar-icon svg { display: block; }
 
     .ai-pillar-title {
       font-size: 0.85rem;
@@ -856,28 +863,46 @@
     </div>
     <div class="ai-pillars">
       <div class="ai-pillar" style="transition-delay:0.05s">
-        <span class="ai-pillar-icon">🤖</span>
+        <span class="ai-pillar-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/>
+            <path d="M9 4v2M15 4v2M9 18v2M15 18v2M4 9h2M4 15h2M18 9h2M18 15h2"/>
+          </svg>
+        </span>
         <div>
           <div class="ai-pillar-title" data-pt="Desenvolvimento de AI Agents" data-en="AI Agent Development">Desenvolvimento de AI Agents</div>
           <div class="ai-pillar-desc" data-pt="Agentes autônomos com Claude & Claude Code para automação de workflows operacionais" data-en="Autonomous agents with Claude & Claude Code for operational workflow automation">Agentes autônomos com Claude & Claude Code para automação de workflows operacionais</div>
         </div>
       </div>
       <div class="ai-pillar" style="transition-delay:0.15s">
-        <span class="ai-pillar-icon">🔗</span>
+        <span class="ai-pillar-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+            <path d="M12 7v4M12 11l-5.5 6M12 11l5.5 6M7 19h10"/>
+          </svg>
+        </span>
         <div>
           <div class="ai-pillar-title" data-pt="Orquestração Multi-Agente" data-en="Multi-Agent Orchestration">Orquestração Multi-Agente</div>
           <div class="ai-pillar-desc" data-pt="Pipelines LLM complexos, RAG sobre bases internas, padrões de orquestração escaláveis" data-en="Complex LLM pipelines, RAG over internal knowledge bases, scalable orchestration patterns">Pipelines LLM complexos, RAG sobre bases internas, padrões de orquestração escaláveis</div>
         </div>
       </div>
       <div class="ai-pillar" style="transition-delay:0.25s">
-        <span class="ai-pillar-icon">⚡</span>
+        <span class="ai-pillar-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </span>
         <div>
           <div class="ai-pillar-title" data-pt="Automação Operacional" data-en="Operational Automation">Automação Operacional</div>
           <div class="ai-pillar-desc" data-pt="Ferramentas internas de produtividade: status reports, triagem de escalations, revisão de SOPs" data-en="Internal productivity tools: status reports, escalation triage, SOP revision pipelines">Ferramentas internas de produtividade: status reports, triagem de escalations, revisão de SOPs</div>
         </div>
       </div>
       <div class="ai-pillar" style="transition-delay:0.35s">
-        <span class="ai-pillar-icon">🏗️</span>
+        <span class="ai-pillar-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.5 6.5H21l-5 5 2 7L12 17l-6 3.5 2-7-5-5h5.5L12 2z"/>
+          </svg>
+        </span>
         <div>
           <div class="ai-pillar-title" data-pt="Vantagem única" data-en="Unique edge">Vantagem única</div>
           <div class="ai-pillar-desc" data-pt="Une governança enterprise (10 anos EY + SOX) com capacidade técnica de construir — sem depender de engenharia" data-en="Combines enterprise governance (10 years EY + SOX) with hands-on build capability — no engineering dependency">Une governança enterprise (10 anos EY + SOX) com capacidade técnica de construir — sem depender de engenharia</div>
