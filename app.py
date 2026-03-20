@@ -117,12 +117,12 @@ Descreva como este negócio poderia operar em 2 a 3 anos com agentes de IA integ
 Crie um diagrama visual do fluxo operacional deste negócio. Use EXATAMENTE este formato JSON dentro de um bloco de código com a linguagem "diagram-visual". Entre 4 e 7 steps. Escolha emojis relevantes ao setor e ao processo específico:
 
 ```diagram-visual
-{
+{{
   "steps": [
-    {"icon": "📥", "label": "Nome do processo", "detail": "detalhe curto e específico"},
-    {"icon": "⚙️", "label": "Nome do processo", "detail": "detalhe curto e específico"}
+    {{"icon": "📥", "label": "Nome do processo", "detail": "detalhe curto e específico"}},
+    {{"icon": "⚙️", "label": "Nome do processo", "detail": "detalhe curto e específico"}}
   ]
-}
+}}
 ```
 
 ## Próximos Passos
