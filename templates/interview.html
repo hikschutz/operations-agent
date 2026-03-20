@@ -68,8 +68,18 @@
             font-size: 13px; color: #7a5c00; margin-bottom: 16px;
         }
 
+        .btn-row { display: flex; align-items: center; gap: 12px; margin-top: 28px; }
+
+        .back-btn {
+            padding: 14px 24px; background: transparent; color: var(--gray);
+            border: 1.5px solid var(--light); border-radius: 3px;
+            font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+            cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s;
+        }
+        .back-btn:hover { border-color: var(--black); color: var(--black); }
+
         .next-btn {
-            display: none; margin-top: 28px; padding: 14px 36px;
+            display: none; padding: 14px 36px;
             background: var(--black); color: var(--bg); border: none; border-radius: 3px;
             font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
             cursor: pointer; letter-spacing: 0.8px; text-transform: uppercase; transition: all 0.2s;
@@ -120,8 +130,10 @@
         <span class="fallback-link" id="fallbackLink" onclick="toggleFallback()">Prefere digitar?</span>
         <textarea class="manual" id="manual" placeholder="Digite sua resposta aqui..."></textarea>
 
-        <br>
-        <button class="next-btn" id="nextBtn" onclick="nextQ()">Próxima Pergunta →</button>
+        <div class="btn-row">
+            <button class="back-btn" id="backBtn" onclick="prevQ()" style="display:none">← Voltar</button>
+            <button class="next-btn" id="nextBtn" onclick="nextQ()">Próxima Pergunta →</button>
+        </div>
     </div>
 
     <div id="proc">
@@ -232,25 +244,41 @@
     function nextQ() {
         const ans = getAnswer();
         if (!ans) { alert('Por favor, grave ou digite sua resposta antes de continuar.'); return; }
-        answers.push(ans);
-        if (idx < QUESTIONS.length - 1) { idx++; loadQ(idx); }
+        answers[idx] = ans;
+        if (idx < QUESTIONS.length - 1) { idx++; loadQ(idx, answers[idx]); }
         else generate();
     }
 
-    function loadQ(i) {
+    function prevQ() {
+        if (idx === 0) return;
+        if (isRec) stopRec();
+        idx--;
+        loadQ(idx, answers[idx]);
+    }
+
+    function loadQ(i, savedAnswer) {
         if (isRec) stopRec();
         finalText = ''; fallbackOn = false;
         document.getElementById('qNum').textContent = 'Pergunta ' + String(i + 1).padStart(2, '0');
         document.getElementById('qText').textContent = QUESTIONS[i];
         const box = document.getElementById('transBox');
-        box.innerHTML = 'Clique em "Iniciar Gravação" e fale sua resposta...';
-        box.classList.add('empty');
+        if (savedAnswer) {
+            box.innerHTML = savedAnswer;
+            box.classList.remove('empty');
+            finalText = savedAnswer;
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            showNext();
+        } else {
+            box.innerHTML = 'Clique em "Iniciar Gravação" e fale sua resposta...';
+            box.classList.add('empty');
+            document.getElementById('nextBtn').style.display = 'none';
+        }
         document.getElementById('manual').style.display = 'none';
         document.getElementById('manual').value = '';
         document.getElementById('fallbackLink').textContent = 'Prefere digitar?';
-        document.getElementById('nextBtn').style.display = 'none';
         document.getElementById('recBtn').classList.remove('on');
         document.getElementById('recLabel').textContent = 'Iniciar Gravação';
+        document.getElementById('backBtn').style.display = i > 0 ? 'inline-block' : 'none';
         const pct = ((i + 1) / QUESTIONS.length * 100).toFixed(1);
         document.getElementById('progFill').style.width = pct + '%';
         document.getElementById('progLabel').textContent = `Pergunta ${i + 1} de ${QUESTIONS.length}`;
