@@ -725,10 +725,25 @@
     }
 
     /* ── RESPONSIVE ── */
+    .mobile-diag-btn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--gold);
+      color: #1a1a1a;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border-radius: 20px;
+    }
+
     @media (max-width: 768px) {
       nav { padding: 1.25rem 1.5rem; }
       nav.scrolled { padding: 0.9rem 1.5rem; }
       .nav-links { display: none; }
+      .mobile-diag-btn { display: flex; }
       #hero { padding: 0 1.5rem; }
       .hero-scroll { left: 1.5rem; }
       #stats { grid-template-columns: 1fr 1fr; }
@@ -758,6 +773,7 @@
       <li><a href="#contact" data-pt="Contato" data-en="Contact">Contato</a></li>
       <li><a href="/diagnostico" data-pt="Diagnóstico IA" data-en="AI Diagnosis" style="color: var(--gold);">Diagnóstico IA</a></li>
     </ul>
+    <a href="/diagnostico" class="mobile-diag-btn">Diagnóstico IA</a>
     <button class="lang-btn" id="langBtn">EN</button>
   </div>
 </nav>
