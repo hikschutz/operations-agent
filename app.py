@@ -84,11 +84,11 @@ def generate():
         if not api_key:
             return jsonify({'error': 'Chave da API não configurada.'}), 500
 
-    qa_text = ""
-    for i, (q, a) in enumerate(zip(questions, transcriptions), 1):
-        qa_text += f"\nPergunta {i}: {q}\nResposta do empresário: {a}\n"
+        qa_text = ""
+        for i, (q, a) in enumerate(zip(questions, transcriptions), 1):
+            qa_text += f"\nPergunta {i}: {q}\nResposta do empresário: {a}\n"
 
-    prompt = """Você é um consultor especialista em implementação de Inteligência Artificial em pequenas e médias empresas brasileiras. Você tem 15 anos de experiência e trabalha com empresas de diversos setores.
+        prompt = """Você é um consultor especialista em implementação de Inteligência Artificial em pequenas e médias empresas brasileiras. Você tem 15 anos de experiência e trabalha com empresas de diversos setores.
 
 Você acabou de conduzir uma entrevista diagnóstica com um dono de negócio. Aqui estão as perguntas e respostas da entrevista:
 
