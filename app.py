@@ -39,6 +39,11 @@ def save_email(email, mode):
 
 
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+
+@app.route('/diagnostico')
 def index():
     return render_template('index.html')
 

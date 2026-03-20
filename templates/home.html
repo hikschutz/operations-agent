@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Henrique Schütz — AI Practitioner & Operations Strategist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Cormorant+Garamond:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f7f4;
+      --surface: #ffffff;
+      --text: #0f0f0f;
+      --muted: #6b7280;
+      --subtle: #9ca3af;
+      --accent: #1a1a1a;
+      --gold: #c9a96e;
+      --border: #e8e6e1;
+      --radius: 14px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL PROGRESS ── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--gold);
+      z-index: 200;
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 0.05s linear;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 3rem;
+      transition: background 0.4s, padding 0.4s var(--ease), box-shadow 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(248,247,244,0.92);
+      backdrop-filter: blur(16px);
+      padding: 1rem 3rem;
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid-line {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s var(--ease) 0.2s forwards;
+    }
+
+    .eyebrow-line { width: 32px; height: 1px; background: var(--gold); }
+
+    .eyebrow-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.8rem, 9vw, 7.5rem);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 0.95;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .hero-name-line {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: slideUp 0.9s var(--ease) forwards;
+    }
+
+    .hero-name-line:nth-child(1) { animation-delay: 0.4s; }
+    .hero-name-line:nth-child(2) { animation-delay: 0.55s; color: var(--gold); font-style: italic; }
+
+    .hero-title {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      max-width: 520px;
+      line-height: 1.75;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s var(--ease) 0.75s forwards;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s var(--ease) 0.9s forwards;
+    }
+
+    .meta-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .meta-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s var(--ease) 1.05s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: all 0.35s var(--ease);
+      cursor: pointer;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-dark { background: var(--text); color: #fff; }
+    .btn-dark:hover { background: #333; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--text); transform: translateY(-2px); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--subtle);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 1.3s forwards;
+    }
+
+    .scroll-arrow { display: flex; flex-direction: column; gap: 3px; animation: bounce 2s ease-in-out infinite; }
+    .scroll-arrow span { display: block; width: 1px; height: 8px; background: var(--subtle); margin: 0 auto; }
+    .scroll-arrow span:last-child { height: 16px; }
+
+    /* ── STATS ── */
+    #stats {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-item {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-num .plus { color: var(--gold); }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--subtle);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── STATS ANIMATION ── */
+    .stat-item {
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+
+    .stat-item.hidden-stat {
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+    }
+
+    /* ── AI BAND ANIMATIONS ── */
+    .ai-anim {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+    }
+
+    .ai-anim.visible { opacity: 1; transform: none; }
+
+    .ai-pillar {
+      opacity: 0;
+      transform: translateX(-14px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+
+    .ai-pillar.visible { opacity: 1; transform: none; }
+
+    /* ── AI FEATURE BAND ── */
+    #ai-band {
+      background: var(--text);
+      color: #fff;
+      padding: 4rem 3rem;
+    }
+
+    .ai-band-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .ai-band-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .ai-band-tag-line { width: 24px; height: 1px; background: var(--gold); }
+
+    .ai-band-tag-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .ai-band-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .ai-band-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.85;
+    }
+
+    .ai-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .ai-pillar {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .ai-pillar:last-child { border-bottom: none; }
+
+    .ai-pillar-icon {
+      font-size: 1.1rem;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    .ai-pillar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .ai-pillar-desc {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+    }
+
+    /* ── SECTION COMMON ── */
+    .section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 7rem 3rem;
+    }
+
+    .section-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tag-line { width: 24px; height: 1px; background: var(--gold); }
+
+    .tag-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── ABOUT ── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3.5rem;
+    }
+
+    .about-body p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .about-body p:last-child { margin: 0; }
+    .about-highlight { color: var(--text) !important; font-weight: 500; }
+
+    .about-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .aside-item {
+      background: var(--surface);
+      padding: 1.5rem 1.75rem;
+      transition: background 0.3s;
+    }
+
+    .aside-item:hover { background: var(--bg); }
+
+    .aside-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 0.35rem;
+    }
+
+    .aside-value { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .aside-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── TIMELINE ── */
+    .timeline { margin-top: 3.5rem; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 2.5rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-item:first-child { padding-top: 0; }
+    .timeline-item:last-child { border-bottom: none; }
+
+    .tl-years { font-size: 0.78rem; font-weight: 600; color: var(--subtle); letter-spacing: 0.03em; }
+    .tl-company { font-size: 0.82rem; font-weight: 700; color: var(--gold); margin-top: 0.3rem; }
+    .tl-role { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 0.6rem; letter-spacing: -0.3px; }
+    .tl-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.8; }
+
+    .tl-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+
+    .tl-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      margin-top: 3.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      padding: 2.25rem 2rem;
+      transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease);
+    }
+
+    .skill-card:hover { background: var(--bg); }
+    .skill-card:hover::before { transform: scaleX(1); }
+
+    .skill-card.featured {
+      background: var(--text);
+      grid-column: span 1;
+    }
+
+    .skill-card.featured .skill-num { color: rgba(255,255,255,0.15); }
+    .skill-card.featured .skill-title { color: #fff; }
+    .skill-card.featured .skill-items li { color: rgba(255,255,255,0.55); }
+    .skill-card.featured::before { background: var(--gold); }
+    .skill-card.featured:hover { background: #111; }
+
+    .skill-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--border);
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: -1px;
+    }
+
+    .skill-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.6rem; letter-spacing: -0.2px; }
+
+    .skill-items { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+    .skill-items li { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── CONTACT ── */
+    .contact-layout {
+      margin-top: 3.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contact-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-headline strong { font-style: normal; font-weight: 700; color: var(--text); }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, padding-left 0.3s var(--ease);
+      background: var(--surface);
+    }
+
+    .contact-link:last-child { border-bottom: none; }
+    .contact-link:hover { background: var(--bg); padding-left: 2rem; }
+
+    .cl-left { display: flex; flex-direction: column; }
+
+    .cl-type {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 0.2rem;
+    }
+
+    .cl-value { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+
+    .cl-arrow { color: var(--subtle); font-size: 1rem; transition: transform 0.3s var(--ease), color 0.3s; }
+    .contact-link:hover .cl-arrow { transform: translateX(4px); color: var(--gold); }
+
+    /* FORM */
+    form { display: flex; flex-direction: column; gap: 1.25rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .fg { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .fg label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .fg input, .fg textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      outline: none;
+      resize: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .fg input:focus, .fg textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
+    }
+
+    .fg input::placeholder, .fg textarea::placeholder { color: #c4c9d4; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy { font-size: 0.78rem; color: var(--subtle); }
+    .footer-made { font-size: 0.78rem; color: var(--subtle); }
+    .footer-made span { color: var(--gold); }
+
+    /* ── DIVIDER ── */
+    hr { border: none; border-top: 1px solid var(--border); max-width: 960px; margin: 0 auto; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    @keyframes slideUp { to { opacity: 1; transform: none; } }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(5px); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      nav.scrolled { padding: 0.9rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { padding: 0 1.5rem; }
+      .hero-scroll { left: 1.5rem; }
+      #stats { grid-template-columns: 1fr 1fr; }
+      .ai-band-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .section { padding: 5rem 1.5rem; }
+      .about-layout, .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+      #ai-band { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">HS.</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about" data-pt="Sobre" data-en="About">Sobre</a></li>
+      <li><a href="#experience" data-pt="Carreira" data-en="Career">Carreira</a></li>
+      <li><a href="#skills" data-pt="Skills" data-en="Skills">Skills</a></li>
+      <li><a href="#contact" data-pt="Contato" data-en="Contact">Contato</a></li>
+      <li><a href="/diagnostico" data-pt="Diagnóstico IA" data-en="AI Diagnosis" style="color: var(--gold);">Diagnóstico IA</a></li>
+    </ul>
+    <button class="lang-btn" id="langBtn">EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-line" id="heroGrid"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      <span class="eyebrow-text" data-pt="AI Practitioner · São Paulo, Brasil" data-en="AI Practitioner · São Paulo, Brazil">AI Practitioner · São Paulo, Brasil</span>
+    </div>
+
+    <h1 class="hero-name">
+      <span class="hero-name-line">Henrique</span>
+      <span class="hero-name-line">Schütz.</span>
+    </h1>
+
+    <p class="hero-title" data-pt="Estrategista de operações com 14+ anos de experiência enterprise — hoje construindo agentes de IA, orquestrando LLMs e automatizando operações de ponta a ponta, sem precisar de um time de engenharia." data-en="Operations strategist with 14+ years of enterprise experience — now building AI agents, orchestrating LLMs, and automating end-to-end operations, without needing an engineering team.">
+      Estrategista de operações com 14+ anos de experiência enterprise — hoje construindo agentes de IA, orquestrando LLMs e automatizando operações de ponta a ponta, sem precisar de um time de engenharia.
+    </p>
+
+    <div class="hero-meta">
+      <span class="meta-pill">
+        <span class="meta-dot"></span>
+        <span data-pt="Trilíngue PT · EN · ES" data-en="Trilingual PT · EN · ES">Trilíngue PT · EN · ES</span>
+      </span>
+      <span class="meta-pill">
+        <span class="meta-dot"></span>
+        <span data-pt="EY · Wildlife Studios · Eureka Group" data-en="EY · Wildlife Studios · Eureka Group">EY · Wildlife Studios · Eureka Group</span>
+      </span>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-dark" data-pt="Entrar em contato" data-en="Get in touch">Entrar em contato</a>
+      <a href="#experience" class="btn btn-ghost" data-pt="Ver trajetória" data-en="View career">Ver trajetória</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-arrow"><span></span><span></span></div>
+    <span data-pt="Explorar" data-en="Explore">Explorar</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-item hidden-stat">
+    <div class="stat-num"><span class="count" data-target="14">0</span><span class="plus">+</span></div>
+    <div class="stat-lbl" data-pt="Anos de Experiência" data-en="Years of Experience">Anos de Experiência</div>
+  </div>
+  <div class="stat-item hidden-stat" style="transition-delay:0.1s">
+    <div class="stat-num"><span class="count" data-target="60">0</span><span class="plus">+</span></div>
+    <div class="stat-lbl" data-pt="Projetos Entregues" data-en="Projects Delivered">Projetos Entregues</div>
+  </div>
+  <div class="stat-item hidden-stat" style="transition-delay:0.2s">
+    <div class="stat-num"><span class="count" data-target="25">0</span><span class="plus">%</span></div>
+    <div class="stat-lbl" data-pt="Redução de Incidentes" data-en="Incident Reduction">Redução de Incidentes</div>
+  </div>
+  <div class="stat-item hidden-stat" style="transition-delay:0.3s">
+    <div class="stat-num"><span class="count" data-target="3">0</span></div>
+    <div class="stat-lbl" data-pt="Idiomas" data-en="Languages">Idiomas</div>
+  </div>
+</div>
+
+<!-- AI FEATURE BAND -->
+<div id="ai-band">
+  <div class="ai-band-inner">
+    <div>
+      <div class="ai-band-tag ai-anim">
+        <span class="ai-band-tag-line"></span>
+        <span class="ai-band-tag-text" data-pt="Foco atual" data-en="Current focus">Foco atual</span>
+      </div>
+      <h2 class="ai-band-title ai-anim" style="transition-delay:0.1s" data-pt="Pesquisa aplicada<br>em IA & Agentes." data-en="Applied research<br>in AI & Agents.">Pesquisa aplicada<br>em IA & Agentes.</h2>
+      <p class="ai-band-desc ai-anim" style="transition-delay:0.22s" data-pt="Autodidata em inteligência artificial aplicada a operações. Não apenas consumindo teoria — construindo sistemas reais: agentes autônomos, pipelines multi-agente, RAG sobre bases de conhecimento internas e ferramentas de produtividade que rodam sem time de engenharia." data-en="Self-directed practitioner in applied AI for operations. Not just consuming theory — building real systems: autonomous agents, multi-agent pipelines, RAG over internal knowledge bases, and productivity tools that run without an engineering team.">
+        Autodidata em inteligência artificial aplicada a operações. Não apenas consumindo teoria — construindo sistemas reais: agentes autônomos, pipelines multi-agente, RAG sobre bases de conhecimento internas e ferramentas de produtividade que rodam sem time de engenharia.
+      </p>
+    </div>
+    <div class="ai-pillars">
+      <div class="ai-pillar" style="transition-delay:0.05s">
+        <span class="ai-pillar-icon">🤖</span>
+        <div>
+          <div class="ai-pillar-title" data-pt="Desenvolvimento de AI Agents" data-en="AI Agent Development">Desenvolvimento de AI Agents</div>
+          <div class="ai-pillar-desc" data-pt="Agentes autônomos com Claude & Claude Code para automação de workflows operacionais" data-en="Autonomous agents with Claude & Claude Code for operational workflow automation">Agentes autônomos com Claude & Claude Code para automação de workflows operacionais</div>
+        </div>
+      </div>
+      <div class="ai-pillar" style="transition-delay:0.15s">
+        <span class="ai-pillar-icon">🔗</span>
+        <div>
+          <div class="ai-pillar-title" data-pt="Orquestração Multi-Agente" data-en="Multi-Agent Orchestration">Orquestração Multi-Agente</div>
+          <div class="ai-pillar-desc" data-pt="Pipelines LLM complexos, RAG sobre bases internas, padrões de orquestração escaláveis" data-en="Complex LLM pipelines, RAG over internal knowledge bases, scalable orchestration patterns">Pipelines LLM complexos, RAG sobre bases internas, padrões de orquestração escaláveis</div>
+        </div>
+      </div>
+      <div class="ai-pillar" style="transition-delay:0.25s">
+        <span class="ai-pillar-icon">⚡</span>
+        <div>
+          <div class="ai-pillar-title" data-pt="Automação Operacional" data-en="Operational Automation">Automação Operacional</div>
+          <div class="ai-pillar-desc" data-pt="Ferramentas internas de produtividade: status reports, triagem de escalations, revisão de SOPs" data-en="Internal productivity tools: status reports, escalation triage, SOP revision pipelines">Ferramentas internas de produtividade: status reports, triagem de escalations, revisão de SOPs</div>
+        </div>
+      </div>
+      <div class="ai-pillar" style="transition-delay:0.35s">
+        <span class="ai-pillar-icon">🏗️</span>
+        <div>
+          <div class="ai-pillar-title" data-pt="Vantagem única" data-en="Unique edge">Vantagem única</div>
+          <div class="ai-pillar-desc" data-pt="Une governança enterprise (10 anos EY + SOX) com capacidade técnica de construir — sem depender de engenharia" data-en="Combines enterprise governance (10 years EY + SOX) with hands-on build capability — no engineering dependency">Une governança enterprise (10 anos EY + SOX) com capacidade técnica de construir — sem depender de engenharia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-tag reveal">
+    <span class="tag-line"></span>
+    <span class="tag-text" data-pt="Sobre mim" data-en="About me">Sobre mim</span>
+  </div>
+  <h2 class="reveal" data-pt="Operações no sangue,<br>IA nas mãos." data-en="Operations in the blood,<br>AI in the hands.">Operações no sangue,<br>IA nas mãos.</h2>
+
+  <div class="about-layout">
+    <div class="about-body reveal">
+      <p data-pt='Construí minha carreira na interseção entre <span class="about-highlight">rigor operacional</span> e <span class="about-highlight">inovação prática</span>. Após 10 anos na EY desenhando frameworks de governança para multinacionais, trouxe essa mentalidade de controle e escala para ambientes de alto crescimento.' data-en='I built my career at the intersection of <span class="about-highlight">operational rigor</span> and <span class="about-highlight">practical innovation</span>. After 10 years at EY designing governance frameworks for multinationals, I brought that mindset of control and scale to high-growth environments.'>
+        Construí minha carreira na interseção entre <span class="about-highlight">rigor operacional</span> e <span class="about-highlight">inovação prática</span>. Após 10 anos na EY desenhando frameworks de governança para multinacionais, trouxe essa mentalidade de controle e escala para ambientes de alto crescimento.
+      </p>
+      <p data-pt="Hoje me dedico em tempo integral à pesquisa aplicada em IA: construo agentes autônomos, orquestro pipelines LLM e desenvolvo ferramentas internas que eliminam trabalho manual — unindo minha experiência de 14 anos em operações com capacidade técnica real de construir." data-en="Today I dedicate myself full-time to applied AI research: building autonomous agents, orchestrating LLM pipelines, and developing internal tools that eliminate manual work — combining my 14 years of operations experience with real hands-on build capability.">
+        Hoje me dedico em tempo integral à pesquisa aplicada em IA: construo agentes autônomos, orquestro pipelines LLM e desenvolvo ferramentas internas que eliminam trabalho manual — unindo minha experiência de 14 anos em operações com capacidade técnica real de construir.
+      </p>
+    </div>
+
+    <div class="about-aside reveal reveal-delay-2">
+      <div class="aside-item">
+        <div class="aside-label" data-pt="Foco atual" data-en="Current focus">Foco atual</div>
+        <div class="aside-value" data-pt="Pesquisa Aplicada em IA" data-en="Applied AI Research">Pesquisa Aplicada em IA</div>
+        <div class="aside-sub" data-pt="Autodirigido · Agentes · Orquestração LLM" data-en="Self-directed · Agents · LLM Orchestration">Autodirigido · Agentes · Orquestração LLM</div>
+      </div>
+      <div class="aside-item">
+        <div class="aside-label" data-pt="Background" data-en="Background">Background</div>
+        <div class="aside-value" data-pt="Operations & PMO Strategist" data-en="Operations & PMO Strategist">Operations & PMO Strategist</div>
+        <div class="aside-sub">EY · Wildlife Studios · Eureka Group</div>
+      </div>
+      <div class="aside-item">
+        <div class="aside-label" data-pt="Formação" data-en="Education">Formação</div>
+        <div class="aside-value" data-pt="Administração + Contabilidade" data-en="Business Admin + Accounting">Administração + Contabilidade</div>
+        <div class="aside-sub">UNESP · Trevisan · CRC Ativo</div>
+      </div>
+      <div class="aside-item">
+        <div class="aside-label" data-pt="Localização" data-en="Location">Localização</div>
+        <div class="aside-value">São Paulo, SP</div>
+        <div class="aside-sub" data-pt="Disponível para remoto/híbrido" data-en="Available for remote/hybrid">Disponível para remoto/híbrido</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr />
+
+<!-- EXPERIENCE -->
+<section class="section" id="experience">
+  <div class="section-tag reveal">
+    <span class="tag-line"></span>
+    <span class="tag-text" data-pt="Trajetória" data-en="Career">Trajetória</span>
+  </div>
+  <h2 class="reveal" data-pt="Onde estive,<br>o que construí." data-en="Where I've been,<br>what I built.">Onde estive,<br>o que construí.</h2>
+
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="tl-period">
+        <div class="tl-years">2023 – <span data-pt="Presente" data-en="Present">Presente</span></div>
+        <div class="tl-company">Eureka Group</div>
+      </div>
+      <div>
+        <div class="tl-role" data-pt="Operations & PMO Manager" data-en="Operations & PMO Manager">Operations & PMO Manager</div>
+        <div class="tl-desc" data-pt="PMO estruturado do zero — governança, metodologias e padrões de entrega como backbone operacional de portfólio multi-projetos. 5 projetos entregues antes do prazo e dentro do orçamento. Pioneiro na introdução de IA nas rotinas operacionais: agentes automatizando status reports, síntese de reuniões e triagem de ações — ~3h/semana economizadas por membro da equipe." data-en="Built PMO from scratch — governance, methodologies, and delivery standards as the operational backbone of a multi-project portfolio. 5 projects delivered ahead of schedule and under budget. Pioneered AI adoption in operational routines: agents automating status reports, meeting synthesis, and action-item triage — ~3h/week saved per team member.">
+          PMO estruturado do zero — governança, metodologias e padrões de entrega como backbone operacional de portfólio multi-projetos. 5 projetos entregues antes do prazo e dentro do orçamento. Pioneiro na introdução de IA nas rotinas operacionais: agentes automatizando status reports, síntese de reuniões e triagem de ações — ~3h/semana economizadas por membro da equipe.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">PMO Design</span>
+          <span class="tl-tag">AI Automation</span>
+          <span class="tl-tag">Governance</span>
+          <span class="tl-tag">R$500K Budget</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">
+        <div class="tl-years">2021 – 2023</div>
+        <div class="tl-company">Wildlife Studios</div>
+      </div>
+      <div>
+        <div class="tl-role" data-pt="Program Manager" data-en="Program Manager">Program Manager</div>
+        <div class="tl-desc" data-pt="Programas estratégicos cross-funcionais integrando Safety, Finance e Operations — 20% de redução no ciclo de entrega e 30% de melhoria no on-time delivery. Desenhou o framework de governança de comunicação reconhecido pela liderança sênior. Gestão de P&L, forecast e risco financeiro ao longo do ciclo de vida dos programas." data-en="Cross-functional strategic programs integrating Safety, Finance, and Operations — 20% reduction in delivery cycle and 30% improvement in on-time delivery. Designed the communication governance framework recognized by senior leadership. P&L, forecast, and financial risk management throughout program lifecycle.">
+          Programas estratégicos cross-funcionais integrando Safety, Finance e Operations — 20% de redução no ciclo de entrega e 30% de melhoria no on-time delivery. Desenhou o framework de governança de comunicação reconhecido pela liderança sênior. Gestão de P&L, forecast e risco financeiro ao longo do ciclo de vida dos programas.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">Strategic Programs</span>
+          <span class="tl-tag">P&L Management</span>
+          <span class="tl-tag">Cross-functional</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">
+        <div class="tl-years">2020 – 2021</div>
+        <div class="tl-company">CRM Group</div>
+      </div>
+      <div>
+        <div class="tl-role" data-pt="Business Operations Manager – FP&A" data-en="Business Operations Manager – FP&A">Business Operations Manager – FP&A</div>
+        <div class="tl-desc" data-pt="Business plans, budgets e forecasts integrados ao ciclo de planejamento estratégico com DRE, balanço e fluxo de caixa. KPI dashboards executivos habilitando decisões orientadas a dados sobre desvios de custo e margem." data-en="Business plans, budgets, and forecasts integrated with strategic planning cycles including P&L, balance sheet, and cash flow. Executive KPI dashboards enabling data-driven decisions on cost and margin deviations.">
+          Business plans, budgets e forecasts integrados ao ciclo de planejamento estratégico com DRE, balanço e fluxo de caixa. KPI dashboards executivos habilitando decisões orientadas a dados sobre desvios de custo e margem.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">FP&A</span>
+          <span class="tl-tag">KPI Dashboards</span>
+          <span class="tl-tag">Strategic Planning</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">
+        <div class="tl-years">2011 – 2020</div>
+        <div class="tl-company">EY</div>
+      </div>
+      <div>
+        <div class="tl-role" data-pt="Senior Manager – Risk, Operations & Internal Controls" data-en="Senior Manager – Risk, Operations & Internal Controls">Senior Manager – Risk, Operations & Internal Controls</div>
+        <div class="tl-desc" data-pt="10 anos (3 como Manager) desenhando programas de governança operacional e compliance SOX (302 & 404) para multinacionais. Team Lead no maior engajamento global de reestruturação da EY na África — equipe multifuncional de 6 pessoas, process mapping e automação (VBA, Python). 60+ iniciativas de melhoria operacional para holding com 21 subsidiárias." data-en="10 years (3 as Manager) designing operational governance and SOX compliance programs (302 & 404) for multinationals. Team Lead on EY's largest global restructuring engagement in Africa — 6-person cross-functional team, process mapping, and automation (VBA, Python). 60+ operational improvement initiatives for a holding with 21 subsidiaries.">
+          10 anos (3 como Manager) desenhando programas de governança operacional e compliance SOX (302 & 404) para multinacionais. Team Lead no maior engajamento global de reestruturação da EY na África — equipe multifuncional de 6 pessoas, process mapping e automação (VBA, Python). 60+ iniciativas de melhoria operacional para holding com 21 subsidiárias.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">SOX Compliance</span>
+          <span class="tl-tag">Risk Governance</span>
+          <span class="tl-tag">COSO Framework</span>
+          <span class="tl-tag">Global Restructuring</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr />
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <div class="section-tag reveal">
+    <span class="tag-line"></span>
+    <span class="tag-text" data-pt="Competências" data-en="Expertise">Competências</span>
+  </div>
+  <h2 class="reveal" data-pt="O que trago<br>para a mesa." data-en="What I bring<br>to the table.">O que trago<br>para a mesa.</h2>
+
+  <div class="skills-grid">
+    <div class="skill-card featured reveal">
+      <div class="skill-num">01</div>
+      <div class="skill-title" data-pt="Operações & Transformação" data-en="Operations & Transformation">Operações & Transformação</div>
+      <ul class="skill-items">
+        <li data-pt="Design de operações" data-en="Operations design">Design de operações</li>
+        <li data-pt="Governança operacional" data-en="Operational governance">Governança operacional</li>
+        <li data-pt="Gestão de mudanças" data-en="Change management">Gestão de mudanças</li>
+        <li data-pt="Frameworks de KPI & SLA" data-en="KPI & SLA frameworks">Frameworks de KPI & SLA</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-num">02</div>
+      <div class="skill-title" data-pt="IA & Automação" data-en="AI & Automation">IA & Automação</div>
+      <ul class="skill-items">
+        <li data-pt="Desenvolvimento de AI Agents" data-en="AI Agent development">Desenvolvimento de AI Agents</li>
+        <li data-pt="Orquestração LLM / Multi-agente" data-en="LLM / Multi-agent orchestration">Orquestração LLM / Multi-agente</li>
+        <li>Claude · Claude Code</li>
+        <li data-pt="RAG & bases de conhecimento" data-en="RAG & knowledge bases">RAG & bases de conhecimento</li>
+        <li data-pt="Automação de workflows" data-en="Workflow automation">Automação de workflows</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-num">03</div>
+      <div class="skill-title" data-pt="PMO & Programas" data-en="PMO & Programs">PMO & Programas</div>
+      <ul class="skill-items">
+        <li data-pt="PMO design & implementação" data-en="PMO design & implementation">PMO design & implementação</li>
+        <li data-pt="Gestão de portfólio" data-en="Portfolio management">Gestão de portfólio</li>
+        <li>Agile / Scrum</li>
+        <li>Jira · Asana · MS Project</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-num">04</div>
+      <div class="skill-title" data-pt="Risco & Controles" data-en="Risk & Controls">Risco & Controles</div>
+      <ul class="skill-items">
+        <li>SOX Compliance (302 & 404)</li>
+        <li data-pt="Controles internos" data-en="Internal controls">Controles internos</li>
+        <li data-pt="Frameworks de risco" data-en="Risk frameworks">Frameworks de risco</li>
+        <li>COSO Framework</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-num">05</div>
+      <div class="skill-title" data-pt="Dados & Analytics" data-en="Data & Analytics">Dados & Analytics</div>
+      <ul class="skill-items">
+        <li>SQL (intermediate–advanced)</li>
+        <li>Excel (advanced)</li>
+        <li data-pt="Dashboards executivos" data-en="Executive dashboards">Dashboards executivos</li>
+        <li>Python (automation)</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal reveal-delay-3">
+      <div class="skill-num">06</div>
+      <div class="skill-title" data-pt="Liderança & Finanças" data-en="Leadership & Finance">Liderança & Finanças</div>
+      <ul class="skill-items">
+        <li>FP&A · Budgeting · P&L</li>
+        <li data-pt="C-suite stakeholders" data-en="C-suite stakeholders">C-suite stakeholders</li>
+        <li data-pt="Equipes globais" data-en="Global teams">Equipes globais</li>
+        <li>PT · EN · ES</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr />
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-tag reveal">
+    <span class="tag-line"></span>
+    <span class="tag-text" data-pt="Contato" data-en="Contact">Contato</span>
+  </div>
+
+  <div class="contact-layout">
+    <div class="reveal">
+      <p class="contact-headline" id="contactHeadline">
+        <strong data-pt="Vamos construir algo" data-en="Let's build something">Vamos construir algo</strong><br>
+        <span data-pt="juntos? Aberto a oportunidades em IA, operações e automação." data-en="together? Open to AI, operations, and automation opportunities.">juntos? Aberto a oportunidades em IA, operações e automação.</span>
+      </p>
+      <div class="contact-links">
+        <a href="mailto:hikschutz@gmail.com" class="contact-link">
+          <div class="cl-left">
+            <span class="cl-type">Email</span>
+            <span class="cl-value">hikschutz@gmail.com</span>
+          </div>
+          <span class="cl-arrow">→</span>
+        </a>
+        <a href="https://linkedin.com/in/hikschutz" target="_blank" class="contact-link">
+          <div class="cl-left">
+            <span class="cl-type">LinkedIn</span>
+            <span class="cl-value">linkedin.com/in/hikschutz</span>
+          </div>
+          <span class="cl-arrow">→</span>
+        </a>
+        <a href="tel:+5511985217276" class="contact-link">
+          <div class="cl-left">
+            <span class="cl-type" data-pt="Telefone" data-en="Phone">Telefone</span>
+            <span class="cl-value">+55 (11) 98521-7276</span>
+          </div>
+          <span class="cl-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- FORMSPREE: troque YOUR_FORM_ID pelo ID gerado em formspree.io -->
+    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="reveal reveal-delay-2" id="contactForm">
+      <input type="hidden" name="_replyto" value="hikschutz@gmail.com" />
+      <div class="form-row">
+        <div class="fg">
+          <label data-pt="Nome" data-en="Name">Nome</label>
+          <input type="text" name="name" placeholder="Seu nome" data-pt-ph="Seu nome" data-en-ph="Your name" required />
+        </div>
+        <div class="fg">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="seu@email.com" required />
+        </div>
+      </div>
+      <div class="fg">
+        <label data-pt="Assunto" data-en="Subject">Assunto</label>
+        <input type="text" name="subject" placeholder="Oportunidade / Parceria / Outro" data-pt-ph="Oportunidade / Parceria / Outro" data-en-ph="Opportunity / Partnership / Other" />
+      </div>
+      <div class="fg">
+        <label data-pt="Mensagem" data-en="Message">Mensagem</label>
+        <textarea rows="4" name="message" placeholder="Olá, Henrique..." data-pt-ph="Olá, Henrique..." data-en-ph="Hi Henrique..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-dark" id="submitBtn" data-pt="Enviar mensagem" data-en="Send message">Enviar mensagem</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy" data-pt="© 2025 Henrique Schütz" data-en="© 2025 Henrique Schütz">© 2025 Henrique Schütz</span>
+  <span class="footer-made">São Paulo · Brasil · <span>PT · EN · ES</span></span>
+</footer>
+
+<script>
+// ── Scroll progress ──
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  progressBar.style.transform = `scaleX(${pct})`;
+}, { passive: true });
+
+// ── Nav scroll ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── Parallax hero grid ──
+const heroGrid = document.getElementById('heroGrid');
+window.addEventListener('scroll', () => {
+  heroGrid.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+}, { passive: true });
+
+// ── Reveal on scroll ──
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Stats entrance ──
+const statsObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.hidden-stat').forEach(item => item.classList.remove('hidden-stat'));
+      e.target.querySelectorAll('.count').forEach(countUp);
+      statsObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+const statsEl = document.getElementById('stats');
+if (statsEl) statsObs.observe(statsEl);
+
+// ── AI band animations ──
+const aiBandObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.ai-anim, .ai-pillar').forEach(el => el.classList.add('visible'));
+      aiBandObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+const aiBand = document.getElementById('ai-band');
+if (aiBand) aiBandObs.observe(aiBand);
+
+// ── Count up ──
+function countUp(el) {
+  const target = +el.dataset.target;
+  const start = performance.now();
+  const duration = 1800;
+  const update = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 4);
+    el.textContent = Math.floor(ease * target);
+    if (t < 1) requestAnimationFrame(update);
+    else el.textContent = target;
+  };
+  requestAnimationFrame(update);
+}
+
+
+// ── Skill card tilt ──
+document.querySelectorAll('.skill-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(600px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-3px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+
+// ── Language toggle ──
+let lang = 'pt';
+
+document.getElementById('langBtn').addEventListener('click', () => {
+  lang = lang === 'pt' ? 'en' : 'pt';
+  document.getElementById('langBtn').textContent = lang === 'pt' ? 'EN' : 'PT';
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+  applyLang();
+});
+
+function applyLang() {
+  // Text content elements
+  document.querySelectorAll('[data-pt]').forEach(el => {
+    const val = el.getAttribute(lang === 'pt' ? 'data-pt' : 'data-en');
+    if (val !== null) el.innerHTML = val;
+  });
+  // Placeholders
+  document.querySelectorAll('[data-pt-ph]').forEach(el => {
+    el.placeholder = el.getAttribute(lang === 'pt' ? 'data-pt-ph' : 'data-en-ph') || '';
+  });
+  // Footer location (no data-pt, keep fixed)
+  const footerMade = document.querySelector('.footer-made');
+  if (footerMade) {
+    footerMade.innerHTML = lang === 'pt'
+      ? 'São Paulo · Brasil · <span>PT · EN · ES</span>'
+      : 'São Paulo · Brazil · <span>PT · EN · ES</span>';
+  }
+  // Submit button
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.textContent = lang === 'pt' ? 'Enviar mensagem' : 'Send message';
+  }
+}
+
+// ── Form ──
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  const formAction = e.target.action;
+  // If form ID hasn't been set up yet, show demo behavior
+  if (formAction.includes('YOUR_FORM_ID')) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = lang === 'pt' ? 'Enviado ✓' : 'Sent ✓';
+    btn.style.background = '#16a34a';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = lang === 'pt' ? 'Enviar mensagem' : 'Send message';
+      btn.style.background = '';
+      btn.disabled = false;
+      e.target.reset();
+    }, 3000);
+    return;
+  }
+  // Real Formspree submission
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = lang === 'pt' ? 'Enviando...' : 'Sending...';
+  try {
+    const res = await fetch(e.target.action, {
+      method: 'POST',
+      body: new FormData(e.target),
+      headers: { Accept: 'application/json' }
+    });
+    if (res.ok) {
+      btn.textContent = lang === 'pt' ? 'Mensagem enviada ✓' : 'Message sent ✓';
+      btn.style.background = '#16a34a';
+      e.target.reset();
+    } else {
+      btn.textContent = lang === 'pt' ? 'Erro — tente novamente' : 'Error — try again';
+      btn.style.background = '#dc2626';
+      btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = lang === 'pt' ? 'Erro — tente novamente' : 'Error — try again';
+    btn.style.background = '#dc2626';
+    btn.disabled = false;
+  }
+  setTimeout(() => {
+    btn.textContent = lang === 'pt' ? 'Enviar mensagem' : 'Send message';
+    btn.style.background = '';
+  }, 4000);
+});
+</script>
+</body>
+</html>
