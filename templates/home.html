@@ -402,6 +402,28 @@
 
     .ai-pillar:last-child { border-bottom: none; }
 
+    .ai-pillar {
+      transition: opacity 0.25s ease, background 0.25s ease, padding-left 0.25s ease;
+      border-radius: 8px;
+      padding-left: 10px;
+      margin-left: -10px;
+      margin-right: -10px;
+      padding-right: 10px;
+    }
+
+    .ai-pillars:hover .ai-pillar { opacity: 0.35; }
+    .ai-pillars:hover .ai-pillar:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.05);
+    }
+    .ai-pillar:hover .ai-pillar-title { color: #C9A84C; }
+    .ai-pillar:hover .ai-pillar-icon {
+      border-color: rgba(201,168,76,0.7);
+      background: rgba(201,168,76,0.08);
+    }
+    .ai-pillar-icon { transition: border-color 0.25s ease, background 0.25s ease; }
+    .ai-pillar-title { transition: color 0.25s ease; }
+
     .ai-pillar-icon {
       width: 32px;
       height: 32px;
@@ -557,7 +579,7 @@
     .skill-card {
       background: var(--surface);
       padding: 2.25rem 2rem;
-      transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+      transition: background 0.3s var(--ease), transform 0.3s var(--ease), opacity 0.3s var(--ease), box-shadow 0.3s var(--ease);
       position: relative;
       overflow: hidden;
     }
@@ -573,8 +595,18 @@
       transition: transform 0.4s var(--ease);
     }
 
-    .skill-card:hover { background: var(--bg); }
-    .skill-card:hover::before { transform: scaleX(1); }
+    .skills-grid:hover .skill-card { opacity: 0.4; }
+    .skills-grid:hover .skill-card:hover {
+      opacity: 1;
+      background: var(--bg);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .skills-grid:hover .skill-card:hover::before { transform: scaleX(1); }
+    .skill-card:hover .skill-title { color: var(--gold); }
+    .skill-title { transition: color 0.25s ease; }
+    .skill-card.featured:hover .skill-title { color: #C9A84C; }
+    .skills-grid:hover .skill-card.featured:hover { background: #111; }
 
     .skill-card.featured {
       background: var(--text);
