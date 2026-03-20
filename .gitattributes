@@ -1,0 +1,4 @@
+* text=auto
+Procfile text eol=lf
+render.yaml text eol=lf
+*.py text eol=lf
