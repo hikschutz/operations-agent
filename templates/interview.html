@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico IA · HS.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #F5F2EC; --black: #1A1A1A; --gold: #C9A84C; --gray: #888; --light: #E8E4DA; }
+
+        body { background: var(--bg); color: var(--black); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+        .container { max-width: 660px; margin: 0 auto; padding: 40px 24px 60px; }
+
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+        .progress-label { font-size: 11px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
+
+        .progress-bar { height: 2px; background: var(--light); border-radius: 2px; margin-bottom: 60px; }
+        .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.5s ease; }
+
+        /* QUESTION */
+        .q-num { font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; margin-bottom: 14px; }
+        .q-text { font-family: 'Playfair Display', serif; font-size: clamp(20px, 3.5vw, 28px); line-height: 1.45; font-weight: 400; margin-bottom: 44px; }
+
+        /* RECORD */
+        .record-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 26px; background: var(--black); color: var(--bg);
+            border: none; border-radius: 3px; font-family: 'Inter', sans-serif;
+            font-size: 12px; font-weight: 500; cursor: pointer;
+            letter-spacing: 0.8px; text-transform: uppercase; transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .record-btn:hover { background: var(--gold); color: var(--black); }
+        .record-btn.on { background: #c0392b; color: white; }
+        .record-btn.on:hover { background: #a93226; }
+
+        .mic-svg { flex-shrink: 0; }
+        .pulse { width: 8px; height: 8px; background: white; border-radius: 50%; display: none; flex-shrink: 0; animation: pulse 1s infinite; }
+        .record-btn.on .pulse { display: block; }
+        .record-btn.on .mic-svg { display: none; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+        .trans-box {
+            min-height: 76px; padding: 14px 18px;
+            background: white; border: 1.5px solid var(--light); border-radius: 3px;
+            font-size: 14px; line-height: 1.75; color: var(--black);
+        }
+        .trans-box.empty { color: #c0bbb0; }
+        .trans-box .interim { color: #aaa; }
+
+        .fallback-link { font-size: 12px; color: var(--gray); margin-top: 10px; cursor: pointer; text-decoration: underline; display: inline-block; }
+
+        textarea.manual {
+            display: none; width: 100%; min-height: 76px; margin-top: 10px;
+            padding: 14px 18px; background: white; border: 1.5px solid var(--light);
+            border-radius: 3px; font-family: 'Inter', sans-serif; font-size: 14px;
+            line-height: 1.75; color: var(--black); resize: vertical; outline: none;
+        }
+        textarea.manual:focus { border-color: var(--gold); }
+
+        .warning-box {
+            display: none; padding: 14px 18px; background: #fffbe6;
+            border: 1px solid #e6c84a; border-radius: 3px;
+            font-size: 13px; color: #7a5c00; margin-bottom: 16px;
+        }
+
+        .next-btn {
+            display: none; margin-top: 28px; padding: 14px 36px;
+            background: var(--black); color: var(--bg); border: none; border-radius: 3px;
+            font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+            cursor: pointer; letter-spacing: 0.8px; text-transform: uppercase; transition: all 0.2s;
+        }
+        .next-btn:hover { background: var(--gold); color: var(--black); }
+        .next-btn.final { background: var(--gold); color: var(--black); }
+        .next-btn.final:hover { background: var(--black); color: var(--bg); }
+
+        /* PROCESSING */
+        #proc { display: none; text-align: center; padding: 80px 0; }
+        .spinner { width: 44px; height: 44px; border: 3px solid var(--light); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 36px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .proc-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 10px; }
+        .proc-sub { font-size: 13px; color: var(--gray); font-weight: 300; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">HS.</div>
+        <span class="progress-label" id="progLabel">Pergunta 1 de {{ questions|length }}</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progFill" style="width:{{ (100 / questions|length)|round }}%"></div>
+    </div>
+
+    <div id="qSec">
+        <div class="q-num" id="qNum">Pergunta 01</div>
+        <h2 class="q-text" id="qText">{{ questions[0] }}</h2>
+
+        <div class="warning-box" id="warn">
+            Seu navegador não suporta gravação por voz. Use o Google Chrome para a melhor experiência, ou utilize o campo de texto abaixo.
+        </div>
+
+        <button class="record-btn" id="recBtn" onclick="toggleRec()">
+            <svg class="mic-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+            <div class="pulse"></div>
+            <span id="recLabel">Iniciar Gravação</span>
+        </button>
+
+        <div class="trans-box empty" id="transBox">Clique em "Iniciar Gravação" e fale sua resposta...</div>
+
+        <span class="fallback-link" id="fallbackLink" onclick="toggleFallback()">Prefere digitar?</span>
+        <textarea class="manual" id="manual" placeholder="Digite sua resposta aqui..."></textarea>
+
+        <br>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()">Próxima Pergunta →</button>
+    </div>
+
+    <div id="proc">
+        <div class="spinner"></div>
+        <h2 class="proc-title">Analisando o seu negócio...</h2>
+        <p class="proc-sub">Isso pode levar alguns segundos.</p>
+    </div>
+</div>
+
+<script>
+    const QUESTIONS = {{ questions | tojson }};
+    const EMAIL = {{ email | tojson }};
+
+    let idx = 0;
+    let answers = [];
+    let recognition = null;
+    let isRec = false;
+    let finalText = '';
+    let fallbackOn = false;
+
+    function initSpeech() {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) {
+            document.getElementById('warn').style.display = 'block';
+            document.getElementById('recBtn').style.display = 'none';
+            showManual();
+            return;
+        }
+        recognition = new SR();
+        recognition.lang = 'pt-BR';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+
+        recognition.onresult = e => {
+            let fin = '', interim = '';
+            for (let i = 0; i < e.results.length; i++) {
+                if (e.results[i].isFinal) fin += e.results[i][0].transcript;
+                else interim += e.results[i][0].transcript;
+            }
+            finalText = fin;
+            const box = document.getElementById('transBox');
+            box.classList.remove('empty');
+            box.innerHTML = fin + (interim ? `<span class="interim">${interim}</span>` : '');
+            if (fin.trim() || interim.trim()) showNext();
+        };
+
+        recognition.onerror = e => { console.warn('speech error', e.error); stopRec(); };
+        recognition.onend = () => {
+            if (isRec) setTimeout(() => { try { recognition.start(); } catch(e) {} }, 150);
+        };
+    }
+
+    function toggleRec() {
+        isRec ? stopRec() : startRec();
+    }
+
+    function startRec() {
+        if (!recognition) return;
+        isRec = true; finalText = '';
+        const box = document.getElementById('transBox');
+        box.innerHTML = ''; box.classList.remove('empty');
+        recognition.start();
+        document.getElementById('recBtn').classList.add('on');
+        document.getElementById('recLabel').textContent = 'Parar Gravação';
+    }
+
+    function stopRec() {
+        isRec = false;
+        try { recognition.stop(); } catch(e) {}
+        document.getElementById('recBtn').classList.remove('on');
+        document.getElementById('recLabel').textContent = 'Reiniciar Gravação';
+        if (finalText.trim()) showNext();
+    }
+
+    function showManual() {
+        const m = document.getElementById('manual');
+        m.style.display = 'block';
+        m.addEventListener('input', () => { if (m.value.trim()) showNext(); });
+    }
+
+    function toggleFallback() {
+        fallbackOn = !fallbackOn;
+        document.getElementById('fallbackLink').textContent = fallbackOn ? 'Usar gravação de voz' : 'Prefere digitar?';
+        const m = document.getElementById('manual');
+        if (fallbackOn) { showManual(); m.focus(); }
+        else { m.style.display = 'none'; }
+    }
+
+    function showNext() {
+        const btn = document.getElementById('nextBtn');
+        btn.style.display = 'inline-block';
+        const isLast = idx === QUESTIONS.length - 1;
+        btn.textContent = isLast ? 'Gerar Diagnóstico →' : 'Próxima Pergunta →';
+        if (isLast) btn.classList.add('final'); else btn.classList.remove('final');
+    }
+
+    function getAnswer() {
+        const m = document.getElementById('manual');
+        if (fallbackOn && m.value.trim()) return m.value.trim();
+        const t = finalText.trim();
+        if (t) return t;
+        const box = document.getElementById('transBox');
+        const txt = box.textContent.trim();
+        if (txt && txt !== 'Clique em "Iniciar Gravação" e fale sua resposta...') return txt;
+        return '';
+    }
+
+    function nextQ() {
+        const ans = getAnswer();
+        if (!ans) { alert('Por favor, grave ou digite sua resposta antes de continuar.'); return; }
+        answers.push(ans);
+        if (idx < QUESTIONS.length - 1) { idx++; loadQ(idx); }
+        else generate();
+    }
+
+    function loadQ(i) {
+        if (isRec) stopRec();
+        finalText = ''; fallbackOn = false;
+        document.getElementById('qNum').textContent = 'Pergunta ' + String(i + 1).padStart(2, '0');
+        document.getElementById('qText').textContent = QUESTIONS[i];
+        const box = document.getElementById('transBox');
+        box.innerHTML = 'Clique em "Iniciar Gravação" e fale sua resposta...';
+        box.classList.add('empty');
+        document.getElementById('manual').style.display = 'none';
+        document.getElementById('manual').value = '';
+        document.getElementById('fallbackLink').textContent = 'Prefere digitar?';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('recBtn').classList.remove('on');
+        document.getElementById('recLabel').textContent = 'Iniciar Gravação';
+        const pct = ((i + 1) / QUESTIONS.length * 100).toFixed(1);
+        document.getElementById('progFill').style.width = pct + '%';
+        document.getElementById('progLabel').textContent = `Pergunta ${i + 1} de ${QUESTIONS.length}`;
+    }
+
+    async function generate() {
+        document.getElementById('qSec').style.display = 'none';
+        document.getElementById('proc').style.display = 'block';
+        try {
+            const res = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ transcriptions: answers, questions: QUESTIONS, email: EMAIL })
+            });
+            const data = await res.json();
+            if (data.success) window.location.href = `/diagnosis?token=${data.token}`;
+            else { alert('Erro da API:\n\n' + (data.error || 'Tente novamente.')); window.location.href = '/'; }
+        } catch(e) {
+            alert('Erro de conexão:\n\n' + e.message);
+            window.location.href = '/';
+        }
+    }
+
+    initSpeech();
+</script>
+</body>
+</html>

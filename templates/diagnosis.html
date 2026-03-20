@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico IA · HS.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #F5F2EC; --black: #1A1A1A; --gold: #C9A84C; --gray: #888; --light: #E8E4DA; }
+
+        body { background: var(--bg); color: var(--black); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+        .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+        .date-label { font-size: 12px; color: var(--gray); }
+
+        .gold-line { height: 2px; background: var(--gold); margin-bottom: 48px; }
+
+        .badge {
+            display: inline-block; background: var(--gold); color: var(--black);
+            font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+            padding: 4px 12px; border-radius: 2px; margin-bottom: 20px;
+        }
+
+        .doc-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 36px); font-weight: 700; line-height: 1.25; margin-bottom: 48px; }
+
+        /* Markdown rendered content */
+        .content h2 {
+            font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700;
+            margin-top: 52px; margin-bottom: 14px; padding-bottom: 10px;
+            border-bottom: 1px solid var(--light);
+        }
+        .content p { font-size: 15px; line-height: 1.9; margin-bottom: 16px; font-weight: 300; }
+        .content strong { font-weight: 500; }
+        .content hr { border: none; border-top: 1px solid var(--light); margin: 32px 0; }
+
+        /* Mermaid diagrams */
+        .mermaid {
+            margin: 28px 0; padding: 24px; background: white;
+            border: 1px solid var(--light); border-radius: 4px;
+            overflow-x: auto; text-align: center;
+        }
+
+        /* PDF BUTTON */
+        .pdf-btn {
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 52px;
+            padding: 12px 26px; background: transparent; color: var(--black);
+            border: 1.5px solid #ccc; border-radius: 3px;
+            font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+            letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+        }
+        .pdf-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* CTA */
+        .cta {
+            margin-top: 64px; padding: 44px 40px; background: var(--black);
+            border-radius: 3px; text-align: center;
+        }
+        .cta h3 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--bg); font-weight: 400; margin-bottom: 10px; }
+        .cta p { font-size: 14px; color: #777; margin-bottom: 28px; font-weight: 300; }
+        .cta-link {
+            display: inline-block; padding: 13px 32px; background: var(--gold); color: var(--black);
+            text-decoration: none; font-family: 'Inter', sans-serif; font-size: 12px;
+            font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase;
+            border-radius: 3px; transition: all 0.2s;
+        }
+        .cta-link:hover { background: white; }
+
+        footer { margin-top: 64px; text-align: center; font-size: 12px; color: var(--gray); font-weight: 300; }
+        footer strong { font-weight: 500; color: var(--black); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">HS.</div>
+        <span class="date-label" id="dateLabel"></span>
+    </div>
+    <div class="gold-line"></div>
+
+    <div class="badge">Diagnóstico IA</div>
+    <h1 class="doc-title">Seu Diagnóstico Personalizado</h1>
+
+    <div class="content" id="content"></div>
+
+    <button class="pdf-btn" id="pdfBtn" onclick="downloadPdf()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Baixar PDF
+    </button>
+
+    <div class="cta">
+        <h3>Quer implementar isso?</h3>
+        <p>Fale diretamente com Henrique Schütz e transforme este diagnóstico em ação.</p>
+        <a class="cta-link" href="mailto:henrique@henriqueschutz.com">Fale com Henrique Schütz</a>
+    </div>
+</div>
+
+<footer>by <strong>Henrique Schütz</strong> · HS. · Diagnóstico IA</footer>
+
+<script>
+    const DIAG = {{ diagnosis | tojson }};
+
+    document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('pt-BR', {
+        day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    document.getElementById('content').innerHTML = marked.parse(DIAG);
+
+    // Render Mermaid diagrams
+    mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: {
+        primaryColor: '#F5F2EC', primaryBorderColor: '#C9A84C',
+        primaryTextColor: '#1A1A1A', lineColor: '#C9A84C', fontSize: '14px'
+    }});
+    document.querySelectorAll('code.language-mermaid').forEach(el => {
+        const div = document.createElement('div');
+        div.className = 'mermaid';
+        div.textContent = el.textContent;
+        el.parentElement.replaceWith(div);
+    });
+    mermaid.run();
+
+    async function downloadPdf() {
+        const btn = document.getElementById('pdfBtn');
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+        btn.innerHTML = 'Gerando PDF...';
+        try {
+            const res = await fetch('/download-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ diagnosis: DIAG })
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `diagnostico-ia-${new Date().toISOString().slice(0,10)}.pdf`;
+                document.body.appendChild(a); a.click();
+                URL.revokeObjectURL(url); a.remove();
+            } else {
+                alert('Erro ao gerar PDF. Tente novamente.');
+            }
+        } catch(e) {
+            alert('Erro ao gerar PDF. Tente novamente.');
+        } finally {
+            btn.style.opacity = ''; btn.style.pointerEvents = '';
+            btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
+        }
+    }
+</script>
+</body>
+</html>

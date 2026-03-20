@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico IA · HS.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #F5F2EC;
+            --black: #1A1A1A;
+            --gold: #C9A84C;
+            --gray: #888;
+            --light: #E8E4DA;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--black);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 72px;
+            opacity: 0.6;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(26px, 5vw, 40px);
+            font-weight: 700;
+            line-height: 1.25;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            width: 36px;
+            height: 2px;
+            background: var(--gold);
+            margin: 0 auto 32px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            text-align: center;
+            line-height: 1.75;
+            margin-bottom: 48px;
+            font-weight: 300;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1.5px solid var(--light);
+            background: white;
+            color: var(--black);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            border-radius: 3px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        input[type="email"]:focus { border-color: var(--gold); }
+        input[type="email"]::placeholder { color: #c0bbb0; }
+
+        .error-msg {
+            color: #b03a2e;
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+            text-align: center;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border: none;
+            line-height: 1.3;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--black);
+            border: 1.5px solid #ccc;
+        }
+
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+        .btn-filled {
+            background: var(--black);
+            color: var(--bg);
+        }
+
+        .btn-filled:hover { background: var(--gold); color: var(--black); }
+
+        .btn small {
+            display: block;
+            font-size: 10px;
+            opacity: 0.55;
+            text-transform: none;
+            font-weight: 400;
+            letter-spacing: 0;
+            margin-top: 3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px;
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 300;
+        }
+
+        footer strong { font-weight: 500; color: var(--black); }
+    </style>
+</head>
+<body>
+    <main class="main">
+        <div class="logo">HS.</div>
+
+        <h1>Descubra como implementar IA no seu negócio</h1>
+        <div class="divider"></div>
+        <p class="subtitle">
+            Responda 3 ou 6 perguntas por voz e receba um diagnóstico<br>
+            personalizado — gratuito.
+        </p>
+
+        <form style="width:100%" novalidate>
+            <input type="email" id="email" placeholder="Seu melhor e-mail" autocomplete="email">
+            <p class="error-msg" id="emailError">Por favor, insira um e-mail válido.</p>
+            <div class="buttons">
+                <button type="button" class="btn btn-outline" onclick="go('quick')">
+                    Modo Rápido
+                    <small>3 perguntas · ~5 min</small>
+                </button>
+                <button type="button" class="btn btn-filled" onclick="go('full')">
+                    Modo Completo
+                    <small>6 perguntas · ~10 min</small>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <footer>by <strong>Henrique Schütz</strong> · HS.</footer>
+
+    <script>
+        function go(mode) {
+            const input = document.getElementById('email');
+            const err = document.getElementById('emailError');
+            const email = input.value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                err.style.display = 'block';
+                input.focus();
+                return;
+            }
+            err.style.display = 'none';
+            window.location.href = `/interview?email=${encodeURIComponent(email)}&mode=${mode}`;
+        }
+        document.getElementById('email').addEventListener('keydown', e => {
+            if (e.key === 'Enter') go('quick');
+        });
+    </script>
+</body>
+</html>
