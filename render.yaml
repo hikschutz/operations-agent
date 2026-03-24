@@ -9,3 +9,7 @@ services:
         sync: false
       - key: SECRET_KEY
         sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: LEADS_KEY
+        sync: false

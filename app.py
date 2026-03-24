@@ -2,6 +2,7 @@ import os
 import io
 import csv
 import uuid
+import psycopg2
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
 from dotenv import load_dotenv
@@ -16,6 +17,60 @@ app.secret_key = os.environ.get('SECRET_KEY', 'hs-diagnostico-secret-local')
 @app.errorhandler(Exception)
 def handle_exception(e):
     return jsonify({'error': str(e)}), 500
+
+
+# ── Database ──────────────────────────────────────────────
+
+def get_db():
+    url = os.environ.get('DATABASE_URL')
+    if not url:
+        return None
+    # Render usa postgres://, psycopg2 precisa de postgresql://
+    if url.startswith('postgres://'):
+        url = url.replace('postgres://', 'postgresql://', 1)
+    return psycopg2.connect(url)
+
+
+def init_db():
+    conn = get_db()
+    if not conn:
+        return
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS leads (
+            id SERIAL PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            mode VARCHAR(20),
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    ''')
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def save_lead(email, mode):
+    conn = get_db()
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                'INSERT INTO leads (email, mode) VALUES (%s, %s)',
+                (email, mode)
+            )
+            conn.commit()
+            cur.close()
+        finally:
+            conn.close()
+    else:
+        # fallback CSV para desenvolvimento local
+        filepath = 'emails.csv'
+        file_exists = os.path.exists(filepath)
+        with open(filepath, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(['email', 'mode', 'timestamp'])
+            writer.writerow([email, mode, datetime.now().isoformat()])
 
 QUESTIONS_SHORT = [
     "Me conta o que você faz e como o seu negócio funciona no dia a dia.",
@@ -33,14 +88,6 @@ QUESTIONS_FULL = QUESTIONS_SHORT + [
 diagnoses_store = {}
 
 
-def save_email(email, mode):
-    filepath = 'emails.csv'
-    file_exists = os.path.exists(filepath)
-    with open(filepath, 'a', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(['email', 'mode', 'timestamp'])
-        writer.writerow([email, mode, datetime.now().isoformat()])
 
 
 @app.route('/')
@@ -65,7 +112,7 @@ def interview():
         mode = 'quick'
 
     questions = QUESTIONS_SHORT if mode == 'quick' else QUESTIONS_FULL
-    save_email(email, mode)
+    save_lead(email, mode)
 
     return render_template('interview.html', questions=questions, mode=mode, email=email)
 
@@ -229,6 +276,49 @@ def download_pdf():
         mimetype='application/pdf'
     )
 
+
+@app.route('/leads')
+def leads():
+    senha = request.args.get('key', '')
+    if senha != os.environ.get('LEADS_KEY', ''):
+        return 'Acesso negado.', 401
+
+    conn = get_db()
+    if not conn:
+        return 'Banco de dados não configurado.', 500
+
+    cur = conn.cursor()
+    cur.execute('SELECT id, email, mode, created_at FROM leads ORDER BY created_at DESC')
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    html = '''<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <title>Leads · HS.</title>
+    <style>
+        body { font-family: sans-serif; padding: 32px; background: #f9f9f9; color: #1a1a1a; }
+        h1 { margin-bottom: 24px; font-size: 20px; }
+        table { border-collapse: collapse; width: 100%; background: white; border-radius: 6px; overflow: hidden; }
+        th { background: #1a1a1a; color: white; padding: 10px 16px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 10px 16px; border-bottom: 1px solid #eee; font-size: 14px; }
+        tr:last-child td { border-bottom: none; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .quick { background: #e8f5e9; color: #2e7d32; }
+        .full  { background: #e3f2fd; color: #1565c0; }
+    </style></head><body>'''
+    html += f'<h1>Leads ({len(rows)})</h1><table>'
+    html += '<tr><th>#</th><th>Email</th><th>Modo</th><th>Data</th></tr>'
+    for row in rows:
+        mode_class = 'quick' if row[2] == 'quick' else 'full'
+        mode_label = 'Rápido' if row[2] == 'quick' else 'Completo'
+        dt = row[3].strftime('%d/%m/%Y %H:%M') if row[3] else '—'
+        html += f'<tr><td>{row[0]}</td><td>{row[1]}</td><td><span class="badge {mode_class}">{mode_label}</span></td><td>{dt}</td></tr>'
+    html += '</table></body></html>'
+    return html
+
+
+init_db()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
