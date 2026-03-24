@@ -88,33 +88,25 @@ def generate():
         for i, (q, a) in enumerate(zip(questions, transcriptions), 1):
             qa_text += f"\nPergunta {i}: {q}\nResposta do empresário: {a}\n"
 
-        prompt = """Você é um consultor especialista em implementação de Inteligência Artificial em pequenas e médias empresas brasileiras. Você tem 15 anos de experiência e trabalha com empresas de diversos setores.
-
-Você acabou de conduzir uma entrevista diagnóstica com um dono de negócio. Aqui estão as perguntas e respostas da entrevista:
+        prompt = """Você é um consultor sênior em IA para PMEs brasileiras. Conduziu uma entrevista diagnóstica com um empresário. Respostas:
 
 __QA_TEXT__
 
-Com base nessas respostas, crie um documento de diagnóstico completo, personalizado e de alta qualidade. Siga exatamente esta estrutura:
+Crie um diagnóstico objetivo e personalizado. Seja específico ao negócio — nunca genérico. Prosa corrida, sem bullet points, português brasileiro, voz ativa. Cada seção: no máximo 2 parágrafos curtos.
 
 ## Visão do Negócio
-
-Descreva em detalhes o que esta empresa faz, como opera e qual é o seu posicionamento. Use as informações específicas da entrevista — nunca escreva de forma genérica. O leitor deve reconhecer a própria empresa neste texto.
+O que a empresa faz, como opera e seu posicionamento. O dono deve se reconhecer no texto.
 
 ## Mapa de Processos
-
-Identifique e descreva os principais processos operacionais desta empresa com base nas respostas. Explique como cada processo funciona hoje, onde são os gargalos e qual é o impacto disso na operação.
+Principais processos hoje, onde travam e qual o impacto real disso.
 
 ## Quick Wins com IA
-
-Apresente exatamente 2 ou 3 oportunidades concretas de curto prazo onde a inteligência artificial pode gerar impacto imediato neste negócio específico. Para cada oportunidade, explique o que seria feito, como funcionaria na prática e qual seria o resultado esperado.
+Exatamente 2 oportunidades de curto prazo: o que seria feito, como funciona na prática e resultado esperado.
 
 ## Visão de Longo Prazo
-
-Descreva como este negócio poderia operar em 2 a 3 anos com agentes de IA integrados à operação. Seja específico ao setor e ao que foi descrito na entrevista.
+Como o negócio operaria em 2 anos com agentes de IA. Um parágrafo, específico ao setor.
 
 ## Diagrama de Fluxo Operacional
-
-Crie um diagrama visual do fluxo operacional deste negócio. Use EXATAMENTE este formato JSON dentro de um bloco de código com a linguagem "diagram-visual". Entre 4 e 7 steps. Escolha emojis relevantes ao setor e ao processo específico:
 
 ```diagram-visual
 {
@@ -124,25 +116,13 @@ Crie um diagrama visual do fluxo operacional deste negócio. Use EXATAMENTE este
   ]
 }
 ```
+Entre 4 e 7 steps com emojis relevantes ao setor.
 
 ## Próximos Passos
-
-Escreva 3 parágrafos — um para cada ação concreta e sequenciada com prazo estimado. Cada parágrafo começa com o nome da ação em negrito. Sem listas numeradas, sem bullet points — apenas parágrafos corridos.
+3 parágrafos curtos — uma ação cada, com prazo estimado. Cada um começa com o nome da ação em negrito.
 
 ## A Janela de Oportunidade
-
-Escreva um parágrafo final em tom de copy direto, urgente e persuasivo — completamente diferente do tom consultivo usado até aqui. Deixe claro que a orquestração de agentes de IA é o que vai separar as empresas que prosperam das que ficam para trás. Explique que tudo descrito neste diagnóstico só se materializa em escala real quando múltiplos agentes autônomos trabalham juntos. Crie senso de urgência genuíno. Convide o empresário a agir agora, não amanhã. Tom: direto, sem suavização, quase provocador — como quem sabe o que está vindo e quer que o outro também saiba.
-
----
-
-Regras de estilo obrigatórias:
-- Escreva em português brasileiro
-- Tom consultivo, direto e premium — como um consultor sênior escreveria para um executivo
-- Prosa corrida em parágrafos — sem bullet points, listas ou enumerações
-- Voz ativa, frases diretas e objetivas
-- Cada afirmação deve ser específica a este negócio — nunca genérica ou aplicável a qualquer empresa
-- Não use jargões técnicos desnecessários
-- Trate o leitor como um adulto inteligente que quer soluções práticas, não teoria""".replace("__QA_TEXT__", qa_text)
+Um parágrafo: tom direto e urgente. Quem não agir agora vai ficar para trás. Sem suavização.""".replace("__QA_TEXT__", qa_text)
 
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(

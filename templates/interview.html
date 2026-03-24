@@ -153,6 +153,7 @@
     let recognition = null;
     let isRec = false;
     let finalText = '';
+    let committedText = '';
     let fallbackOn = false;
 
     function initSpeech() {
@@ -169,16 +170,16 @@
         recognition.continuous = true;
 
         recognition.onresult = e => {
-            let fin = '', interim = '';
-            for (let i = 0; i < e.results.length; i++) {
-                if (e.results[i].isFinal) fin += e.results[i][0].transcript;
+            let interim = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) committedText += e.results[i][0].transcript;
                 else interim += e.results[i][0].transcript;
             }
-            finalText = fin;
+            finalText = committedText;
             const box = document.getElementById('transBox');
             box.classList.remove('empty');
-            box.innerHTML = fin + (interim ? `<span class="interim">${interim}</span>` : '');
-            if (fin.trim() || interim.trim()) showNext();
+            box.innerHTML = committedText + (interim ? `<span class="interim">${interim}</span>` : '');
+            if (committedText.trim() || interim.trim()) showNext();
         };
 
         recognition.onerror = e => { console.warn('speech error', e.error); stopRec(); };
@@ -193,7 +194,7 @@
 
     function startRec() {
         if (!recognition) return;
-        isRec = true; finalText = '';
+        isRec = true; finalText = ''; committedText = '';
         const box = document.getElementById('transBox');
         box.innerHTML = ''; box.classList.remove('empty');
         recognition.start();
@@ -259,7 +260,7 @@
 
     function loadQ(i, savedAnswer) {
         if (isRec) stopRec();
-        finalText = ''; fallbackOn = false;
+        finalText = ''; committedText = savedAnswer || ''; fallbackOn = false;
         document.getElementById('qNum').textContent = 'Pergunta ' + String(i + 1).padStart(2, '0');
         document.getElementById('qText').textContent = QUESTIONS[i];
         const box = document.getElementById('transBox');
